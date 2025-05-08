@@ -1,0 +1,15 @@
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: SSH into Azure VM and deploy Docker container
+      uses: appleboy/ssh-action@v0.1.0
+      with:
+        host: ${{ secrets.AZURE_VM_IP }}
+        username: ${{ secrets.AZURE_VM_USERNAME }}
+        password: ${{ secrets.AZURE_VM_PASSWORD }}
+        script: |
+          docker pull yourusername/myapp-image:latest
+          docker run -d -p 80:3000 --name myapp-container yourusername/myapp-image:latest
